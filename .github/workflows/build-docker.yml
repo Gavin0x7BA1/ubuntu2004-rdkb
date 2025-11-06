@@ -35,8 +35,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile  # 关联下方编写的 Dockerfile
+          file: ./Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/ubuntu20.04-rdkb:${{ env.COMMIT_ID }}
+          # 将用户名转为小写（${{ github.repository_owner }} 自动获取你的用户名）
+          tags: ghcr.io/${{ lower(github.repository_owner) }}/ubuntu20.04-rdkb:${{ env.COMMIT_ID }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
