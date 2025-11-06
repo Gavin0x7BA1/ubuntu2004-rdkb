@@ -2,16 +2,16 @@ name: Build and Push Ubuntu20.04-RDKB Docker Image
 
 on:
   push:
-    branches: [ main ]  # 可根据需要修改触发分支
+    branches: [ main ]
   pull_request:
-    branches: [ main ]  # 可选，PR 时触发构建验证
+    branches: [ main ]
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      packages: write  # 允许上传镜像到 GHCR
-      contents: read   # 读取仓库代码（如需）
+      packages: write
+      contents: read
 
     steps:
       - name: Checkout code
@@ -25,11 +25,13 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}  # 自动生成，无需手动配置
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract commit ID
-        id: extract_commit
-        run: echo "COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      - name: Extract commit ID and lowercase username
+        run: |
+          echo "COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          # 将用户名转为小写并保存到环境变量
+          echo "LOWERCASE_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -37,7 +39,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          # 将用户名转为小写（${{ github.repository_owner }} 自动获取你的用户名）
-          tags: ghcr.io/${{ lower(github.repository_owner) }}/ubuntu20.04-rdkb:${{ env.COMMIT_ID }}
+          # 使用转换后的小写用户名
+          tags: ghcr.io/${{ env.LOWERCASE_OWNER }}/ubuntu20.04-rdkb:${{ env.COMMIT_ID }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
