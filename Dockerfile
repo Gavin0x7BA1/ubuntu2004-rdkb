@@ -4,14 +4,14 @@ FROM ubuntu:20.04
 # 避免交互模式（安装依赖时无需手动确认）
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 第一步：安装基础依赖包（修复换行符，移除行尾多余空格）
+# 第一步：安装基础依赖包（修复 Python 包名）
 RUN apt-get update && apt-get install -y \
     gcc g++ binutils patch bzip2 flex make gettext \
     pkg-config unzip zlib1g-dev libc6-dev subversion libncurses5-dev gawk \
-    sharutils curl libxml-parser-perl ocaml-nox ocaml ocaml-findlib \
-    python-yaml libssl-dev libfdt-dev bison texi2html diffstat dos2unix \
+    sharutils curl ca-certificates libxml-parser-perl ocaml-nox ocaml ocaml-findlib \
+    python3-yaml libssl-dev libfdt-dev bison texi2html diffstat dos2unix \
     texinfo chrpath bc gcc-multilib git build-essential autoconf libtool \
-    libncurses-dev gperf lib32z1 libc6-i386 g++-multilib python-git \
+    libncurses-dev gperf lib32z1 libc6-i386 g++-multilib python3-git \
     coccinelle zstd liblz4-tool cproto device-tree-compiler u-boot-tools \
     automake libparmap-ocaml-dev libpcre-ocaml-dev \
     && rm -rf /var/lib/apt/lists/*
