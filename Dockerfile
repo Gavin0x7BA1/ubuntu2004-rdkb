@@ -4,7 +4,7 @@ FROM ubuntu:20.04
 # 避免交互模式（安装依赖时无需手动确认）
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 第一步：安装基础依赖包
+# 第一步：安装基础依赖包（修复换行符，移除行尾多余空格）
 RUN apt-get update && apt-get install -y \
     gcc g++ binutils patch bzip2 flex make gettext \
     pkg-config unzip zlib1g-dev libc6-dev subversion libncurses5-dev gawk \
@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     texinfo chrpath bc gcc-multilib git build-essential autoconf libtool \
     libncurses-dev gperf lib32z1 libc6-i386 g++-multilib python-git \
     coccinelle zstd liblz4-tool cproto device-tree-compiler u-boot-tools \
-    automake libparmap-ocaml-dev libpcre-ocaml-dev \  # 预安装 coccinelle 依赖，避免报错
+    automake libparmap-ocaml-dev libpcre-ocaml-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # 第二步：卸载旧版 coccinelle 并从源码编译安装 1.1.1 版本
@@ -34,5 +34,5 @@ RUN curl -LO http://launchpadlibrarian.net/366014597/make_4.1-9.1ubuntu1_amd64.d
     && rm -f make_4.1-9.1ubuntu1_amd64.deb \
     && apt-get clean
 
-# 可选：验证关键工具版本（确保安装成功）
-RUN gcc --version && make --version && spatch --version  # spatch 是 coccinelle 核心工具
+# 验证关键工具版本
+RUN gcc --version && make --version && spatch --version
